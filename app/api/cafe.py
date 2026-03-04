@@ -8,7 +8,7 @@ from app.schemas.cafe import CafeBase, CafeCreate, CafeResponse
 # from app.crud.cafe import get_cafes
 from app.services.places import search_cafes
 
-router = APIRouter()
+router = APIRouter(prefix="/cafes", tags=["cafes"])
 
 @router.get("", response_model=List[CafeResponse])
 async def read_cafes(db: Session = Depends(get_db)):

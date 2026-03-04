@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.refresh_token import RefreshToken
@@ -17,9 +18,15 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
+    existing = db.query(User).filter(User.username == user.username).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Username already registered")
+
     new_user = User(
         email=user.email,
-        hashed_password=hash_password(user.password)
+        hashedPassword=hash_password(user.password),
+        username=user.username,
+        fullName=user.fullName
     )
     db.add(new_user)
     db.commit()
@@ -29,18 +36,24 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
+    stmt = select(User).where(
+        (User.email == user.emailOrUsername) |
+        (User.username == user.emailOrUsername)
+    )
 
-    if not db_user or not verify_password(user.password, str(db_user.hashed_password)):
+    result = db.execute(stmt)
+    db_user = result.scalar_one_or_none()
+    
+    if not db_user or not verify_password(user.password, str(db_user.hashedPassword)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    access_token = create_access_token(db_user.id)
-    refresh_token = create_refresh_token(db_user.id)
+    access_token = create_access_token(db_user.userId)
+    refresh_token = create_refresh_token(db_user.userId)
 
     db_refresh = RefreshToken(
-        user_id=db_user.id,
-        token_hash=hash_token(refresh_token),
-        expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+        userId=db_user.userId,
+        tokenHash=hash_token(refresh_token),
+        expiresAt=datetime.now(timezone.utc) + timedelta(days=7),
     )
     db.add(db_refresh)
     db.commit()
@@ -94,9 +107,9 @@ def refresh(response: Response, request: Request, db: Session = Depends(get_db))
     new_refresh = create_refresh_token(user_id)
 
     db.add(RefreshToken(
-        user_id=user_id,
-        token_hash=hash_token(new_refresh),
-        expires_at=datetime.now(timezone.utc) + timedelta(days=30), #change this with const or env var
+        userId=user_id,
+        tokenHash=hash_token(new_refresh),
+        expiresAt=datetime.now(timezone.utc) + timedelta(days=30), #change this with const or env var
     ))
     db.commit()
 

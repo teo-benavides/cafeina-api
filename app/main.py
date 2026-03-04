@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import activity, cafe
+from app.api import activity, auth, cafe, me
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -16,5 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(activity.router, prefix="/activities", tags=["Activities"])
-app.include_router(cafe.router, prefix="/cafes", tags=["Cafes"])
+app.include_router(activity.router)
+app.include_router(cafe.router)
+app.include_router(auth.router)
+app.include_router(me.router)
