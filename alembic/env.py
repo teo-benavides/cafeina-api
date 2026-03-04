@@ -19,7 +19,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from app.database import Base
-from app.models import activity, cafe, user  # import your models
+from app.models import activity, cafe, user, refresh_token  # import your models
 
 target_metadata = Base.metadata
 

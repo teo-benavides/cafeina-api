@@ -3,19 +3,12 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.crud.cafe import create_cafe, get_cafes
-from app.database import SessionLocal
+from app.database import get_db
 from app.schemas.cafe import CafeBase, CafeCreate, CafeResponse
 # from app.crud.cafe import get_cafes
 from app.services.places import search_cafes
 
 router = APIRouter()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.get("", response_model=List[CafeResponse])
 async def read_cafes(db: Session = Depends(get_db)):
