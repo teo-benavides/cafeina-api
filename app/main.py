@@ -1,12 +1,11 @@
 from fastapi import FastAPI
 from app.api import activity, auth, cafe, me, user
 from fastapi.middleware.cors import CORSMiddleware
+from app.config import settings
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:3000",
-]
+origins = settings.CORS_ORIGINS
 
 app.add_middleware(
     CORSMiddleware,
