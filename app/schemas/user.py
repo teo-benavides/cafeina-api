@@ -16,3 +16,11 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class UserMe(BaseModel):
+    userId: int
+    username: str
+    fullName: str | None
+
+    class Config:
+        from_attributes = True

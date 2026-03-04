@@ -8,6 +8,7 @@ class ActivityBase(BaseModel):
     review: str | None
 
 class ActivityCreate(ActivityBase):
+    userId: int
     cafeId: int
 
 class ActivityResponse(ActivityBase):

@@ -6,9 +6,11 @@ class Activity(Base):
     __tablename__ = "activities"
 
     activityId = Column(Integer, primary_key=True, index=True)
+    userId = Column(Integer, ForeignKey("users.userId"), nullable=False)
     cafeId = Column(Integer, ForeignKey("cafes.cafeId"), nullable=False)
     rating = Column(Integer, nullable=True)
     favorite = Column(Boolean, default=False, nullable=False)
     review = Column(String, nullable=True)
 
+    user = relationship("User", back_populates="activities")
     cafe = relationship("Cafe")
