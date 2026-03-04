@@ -11,8 +11,6 @@ class UserLogin(BaseModel):
     password: str
 
 class UserResponse(BaseModel):
-    userId: int
-    email: EmailStr
     username: str
     fullName: str | None
 

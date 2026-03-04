@@ -4,6 +4,6 @@ from app.models.user import User
 
 router = APIRouter(prefix="/me", tags=["me"])
 
-@router.get("/me")
+@router.get("")
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
