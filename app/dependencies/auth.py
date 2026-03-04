@@ -4,7 +4,7 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
-from app.core.jwt import SECRET_KEY, ALGORITHM
+from app.config import settings
 from app.schemas.token_payload import TokenPayload
 
 def get_current_user(
@@ -17,7 +17,7 @@ def get_current_user(
         raise HTTPException(status_code=401)
 
     try:
-        raw_payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        raw_payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         payload = TokenPayload.model_validate(raw_payload)
     except (JWTError, ValidationError):
         raise HTTPException(status_code=401)

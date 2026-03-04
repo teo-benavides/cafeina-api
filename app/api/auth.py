@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from app.config import settings
 from app.database import get_db
 from app.models.refresh_token import RefreshToken
 from app.models.user import User
@@ -84,7 +85,7 @@ def refresh(response: Response, request: Request, db: Session = Depends(get_db))
         raise HTTPException(status_code=401)
 
     try:
-        payload = jwt.decode(token, "super_secret_change_this", algorithms=["HS256"])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
         if payload.get("type") != "refresh":
             raise HTTPException(status_code=401)
 
