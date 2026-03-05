@@ -28,11 +28,11 @@ jobs:
 
       - name: Tag image
         run: |
-          docker tag cafeina-api:latest ${{ secrets.ECR_REGISTRY }}/cafeina-api:latest
+          docker tag cafeina-api:latest ${{ secrets.ECR_REGISTRY }}:latest
 
       - name: Push image
         run: |
-          docker push ${{ secrets.ECR_REGISTRY }}/cafeina-api:latest
+          docker push ${{ secrets.ECR_REGISTRY }}:latest
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1
