@@ -43,4 +43,5 @@ jobs:
           script: |
             cd cafeina
             docker compose pull backend
+            docker compose run --rm backend alembic upgrade head
             docker compose up -d backend
