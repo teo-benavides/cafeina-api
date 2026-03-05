@@ -1,7 +1,9 @@
 from google.maps import places_v1
 from google.type import latlng_pb2
-
 from app.schemas.cafe import CafeBase
+from app.config import settings
+
+client = places_v1.PlacesAsyncClient(client_options={"api_key": settings.GOOGLE_MAPS_API_KEY})
 
 async def search_cafes(location: tuple[float, float], radius: float) -> list[CafeBase]:
     # Define the coordinates and radius
@@ -18,7 +20,6 @@ async def search_cafes(location: tuple[float, float], radius: float) -> list[Caf
     location_restriction = places_v1.SearchNearbyRequest.LocationRestriction(
         circle=circle_area
     )
-    client = places_v1.PlacesAsyncClient()
     # Build the request
     request = places_v1.SearchNearbyRequest(
         location_restriction=location_restriction,

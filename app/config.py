@@ -1,5 +1,3 @@
-from typing import Any
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -14,12 +12,6 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     REFRESH_TOKEN_EXPIRE_DAYS: int
     CORS_ORIGINS: list[str]
-
-    # @field_validator("CORS_ORIGINS", mode="before")
-    # @classmethod
-    # def parse_cors(cls, v: Any) -> list[str]:
-    #     if isinstance(v, str):
-    #         return [origin.strip() for origin in v.split(",")]
-    #     return v
+    GOOGLE_MAPS_API_KEY: str
 
 settings = Settings()
