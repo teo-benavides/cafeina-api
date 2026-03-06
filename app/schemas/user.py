@@ -1,26 +1,27 @@
 from pydantic import BaseModel, EmailStr
+from app.schemas.base import CamelModel
 
-class UserCreate(BaseModel):
+class UserCreate(CamelModel):
     email: EmailStr
     password: str
     username: str
-    fullName: str | None
+    full_name: str | None
 
-class UserLogin(BaseModel):
-    emailOrUsername: str
+class UserLogin(CamelModel):
+    email_or_username: str
     password: str
 
-class UserResponse(BaseModel):
+class UserResponse(CamelModel):
     username: str
-    fullName: str | None
+    full_name: str | None
 
     class Config:
         from_attributes = True
 
-class UserMe(BaseModel):
-    userId: int
+class UserMe(CamelModel):
+    id: int
     username: str
-    fullName: str | None
+    full_name: str | None
 
     class Config:
         from_attributes = True

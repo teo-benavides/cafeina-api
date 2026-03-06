@@ -1,18 +1,17 @@
-from pydantic import BaseModel
-
+from app.schemas.base import CamelModel
 from app.schemas.cafe import CafeResponse
 
-class ActivityBase(BaseModel):
+class ActivityBase(CamelModel):
     rating: int | None
     favorite: bool
     review: str | None
 
 class ActivityCreate(ActivityBase):
-    userId: int
-    cafeId: int
+    user_id: int
+    cafe_id: int
 
 class ActivityResponse(ActivityBase):
-    activityId: int
+    id: int
     cafe: CafeResponse
 
     class Config:

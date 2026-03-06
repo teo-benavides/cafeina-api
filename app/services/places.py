@@ -35,8 +35,8 @@ async def search_cafes(location: tuple[float, float], radius: float) -> list[Caf
         cafe = CafeBase(
             name=place.display_name.text,
             address="",
-            mapsId=place.id,
-            mapsUrl=place.google_maps_uri
+            maps_id=place.id,
+            maps_url=place.google_maps_uri
         )
         route = ""
         number = ""

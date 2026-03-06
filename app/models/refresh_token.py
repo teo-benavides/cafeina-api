@@ -1,13 +1,16 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import String, DateTime, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from datetime import datetime
 from app.database import Base
+
 
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
 
-    refreshTokenId = Column(Integer, primary_key=True)
-    userId = Column(Integer, ForeignKey("users.userId"), nullable=False)
-    tokenHash = Column(String, nullable=False)
-    expiresAt = Column(DateTime(timezone=True), nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    user = relationship("User")
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    token_hash: Mapped[str] = mapped_column(index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    
+    user: Mapped["User"] = relationship()

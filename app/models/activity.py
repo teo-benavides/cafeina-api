@@ -1,16 +1,18 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
+from sqlalchemy import Boolean, ForeignKey, false
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
-from sqlalchemy.orm import relationship
 
 class Activity(Base):
     __tablename__ = "activities"
 
-    activityId = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey("users.userId"), nullable=False)
-    cafeId = Column(Integer, ForeignKey("cafes.cafeId"), nullable=False)
-    rating = Column(Integer, nullable=True)
-    favorite = Column(Boolean, default=False, nullable=False)
-    review = Column(String, nullable=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
-    user = relationship("User", back_populates="activities")
-    cafe = relationship("Cafe")
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    cafe_id: Mapped[int] = mapped_column(ForeignKey("cafes.id"))
+    
+    rating: Mapped[int | None]
+    favorite: Mapped[bool] = mapped_column(server_default=false())
+    review: Mapped[str | None]
+
+    user: Mapped["User"] = relationship(back_populates="activities")
+    cafe: Mapped["Cafe"] = relationship()

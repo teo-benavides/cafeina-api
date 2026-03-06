@@ -18,7 +18,7 @@ def get_user_activities(db: Session, username: str) -> list[Activity]:
     
     return list(
         db.scalars(
-            select(Activity).options(joinedload(Activity.cafe)).filter(Activity.userId == user.userId)
+            select(Activity).options(joinedload(Activity.cafe)).filter(Activity.user_id == user.id)
         ).all()
     )
 

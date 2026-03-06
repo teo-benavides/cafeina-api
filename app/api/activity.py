@@ -18,4 +18,5 @@ def read_user_activities(username: str, db: Session = Depends(get_db)):
 
 @router.post("", response_model=ActivityResponse)
 def add_activity(activity: ActivityCreate, db: Session = Depends(get_db)):
+    print(activity)
     return create_activity(db, activity)

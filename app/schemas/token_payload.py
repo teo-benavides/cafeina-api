@@ -1,7 +1,7 @@
-from pydantic import BaseModel
 from typing import Literal
+from app.schemas.base import CamelModel
 
-class TokenPayload(BaseModel):
+class TokenPayload(CamelModel):
     sub: str
     token_type: Literal["access", "refresh"]
     exp: int

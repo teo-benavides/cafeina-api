@@ -25,9 +25,9 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
     new_user = User(
         email=user.email,
-        hashedPassword=hash_password(user.password),
+        hashed_password=hash_password(user.password),
         username=user.username,
-        fullName=user.fullName
+        full_name=user.full_name
     )
     db.add(new_user)
     db.commit()
@@ -38,23 +38,23 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
     stmt = select(User).where(
-        (User.email == user.emailOrUsername) |
-        (User.username == user.emailOrUsername)
+        (User.email == user.email_or_username) |
+        (User.username == user.email_or_username)
     )
 
     result = db.execute(stmt)
     db_user = result.scalar_one_or_none()
     
-    if not db_user or not verify_password(user.password, str(db_user.hashedPassword)):
+    if not db_user or not verify_password(user.password, str(db_user.hashed_password)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    access_token = create_access_token(db_user.userId)
-    refresh_token = create_refresh_token(db_user.userId)
+    access_token = create_access_token(db_user.id)
+    refresh_token = create_refresh_token(db_user.id)
 
     db_refresh = RefreshToken(
-        userId=db_user.userId,
-        tokenHash=hash_token(refresh_token),
-        expiresAt=datetime.now(timezone.utc) + timedelta(days=7),
+        user_id=db_user.id,
+        token_hash=hash_token(refresh_token),
+        expires_at=datetime.now(timezone.utc) + timedelta(days=7),
     )
     db.add(db_refresh)
     db.commit()
@@ -108,9 +108,9 @@ def refresh(response: Response, request: Request, db: Session = Depends(get_db))
     new_refresh = create_refresh_token(user_id)
 
     db.add(RefreshToken(
-        userId=user_id,
-        tokenHash=hash_token(new_refresh),
-        expiresAt=datetime.now(timezone.utc) + timedelta(days=30), #change this with const or env var
+        user_id=user_id,
+        token_hash=hash_token(new_refresh),
+        expires_at=datetime.now(timezone.utc) + timedelta(days=30), #change this with const or env var
     ))
     db.commit()
 
