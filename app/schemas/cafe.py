@@ -11,6 +11,7 @@ class CafeCreate(CafeBase):
 
 class CafeResponse(CafeBase):
     id: int
+    slug: str
 
     class Config:
         from_attributes = True

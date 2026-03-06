@@ -7,5 +7,6 @@ class Cafe(Base, IdMixin, TimestampMixin):
 
     name: Mapped[str]
     address: Mapped[str]
+    slug: Mapped[str] = mapped_column(unique=True, index=True)
     maps_id: Mapped[str] = mapped_column(unique=True)
     maps_url: Mapped[str]
