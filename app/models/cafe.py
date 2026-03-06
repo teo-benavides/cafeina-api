@@ -1,10 +1,9 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from app.database import Base
+from app.models.base import IdMixin, TimestampMixin
 
-class Cafe(Base):
+class Cafe(Base, IdMixin, TimestampMixin):
     __tablename__ = "cafes"
-
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
     name: Mapped[str]
     address: Mapped[str]
