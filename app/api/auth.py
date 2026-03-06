@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 from app.config import settings
+from app.crud.refresh_token import delete_refresh_token_by_hash, get_refresh_token_by_hash
+from app.crud.user import get_user_by_email, get_user_by_email_or_username, get_user_by_username
 from app.database import get_db
 from app.models.refresh_token import RefreshToken
 from app.models.user import User
@@ -15,11 +17,11 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    existing = db.query(User).filter(User.email == user.email).first()
+    existing = get_user_by_email(db, user.email)
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    existing = db.query(User).filter(User.username == user.username).first()
+    existing = get_user_by_username(db, user.username)
     if existing:
         raise HTTPException(status_code=400, detail="Username already registered")
 
@@ -37,14 +39,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
-    stmt = select(User).where(
-        (User.email == user.email_or_username) |
-        (User.username == user.email_or_username)
-    )
+    db_user = get_user_by_email_or_username(db, user.email_or_username)
 
-    result = db.execute(stmt)
-    db_user = result.scalar_one_or_none()
-    
     if not db_user or not verify_password(user.password, str(db_user.hashed_password)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
@@ -93,10 +89,7 @@ def refresh(response: Response, request: Request, db: Session = Depends(get_db))
     except JWTError:
         raise HTTPException(status_code=401)
 
-    token_hash = hash_token(token)
-    db_token = db.query(RefreshToken).filter(
-        RefreshToken.token_hash == token_hash
-    ).first()
+    db_token = get_refresh_token_by_hash(db, hash_token(token))
 
     if not db_token:
         raise HTTPException(status_code=401)
@@ -124,10 +117,7 @@ def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     token = request.cookies.get("refresh_token")
 
     if token:
-        db.query(RefreshToken).filter(
-            RefreshToken.token_hash == hash_token(token)
-        ).delete()
-        db.commit()
+        delete_refresh_token_by_hash(db, hash_token(token))
 
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")

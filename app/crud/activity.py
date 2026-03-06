@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from app.crud.user import get_user
+from app.crud.user import get_user_by_username
 from app.models.activity import Activity
 from app.schemas.activity import ActivityCreate
 from sqlalchemy.orm import joinedload
@@ -11,7 +11,7 @@ def get_activities(db: Session):
     ).all()
 
 def get_user_activities(db: Session, username: str) -> list[Activity]:
-    user = get_user(db, username)
+    user = get_user_by_username(db, username)
 
     if not user:
         return []
