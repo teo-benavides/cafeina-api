@@ -22,7 +22,7 @@ config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from app.database import Base
-from app.models import activity, cafe, user, refresh_token  # import your models
+from app.models import activity, cafe, follow, user, refresh_token  # import your models
 
 target_metadata = Base.metadata
 

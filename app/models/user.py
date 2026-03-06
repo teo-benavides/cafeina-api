@@ -14,3 +14,10 @@ class User(Base, IdMixin, TimestampMixin):
     hashed_password: Mapped[str]
 
     activities: Mapped[list["Activity"]] = relationship(back_populates="user")
+
+    following: Mapped[list["Follow"]] = relationship(
+        "Follow", foreign_keys="Follow.follower_id", back_populates="follower"
+    )
+    followers: Mapped[list["Follow"]] = relationship(
+        "Follow", foreign_keys="Follow.following_id", back_populates="following"
+    )

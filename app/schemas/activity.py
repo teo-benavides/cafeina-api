@@ -1,5 +1,6 @@
 from app.schemas.base import CamelModel
 from app.schemas.cafe import CafeResponse
+from app.schemas.user import UserResponse
 
 class ActivityBase(CamelModel):
     rating: int | None
@@ -16,3 +17,10 @@ class ActivityResponse(ActivityBase):
 
     class Config:
         from_attributes = True  # required for SQLAlchemy → Pydantic
+
+
+class ActivityFeedResponse(ActivityResponse):
+    user: UserResponse
+
+    class Config:
+        from_attributes = True
