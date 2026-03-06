@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
-from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 from app.config import settings
 from app.crud.refresh_token import delete_refresh_token_by_hash, get_refresh_token_by_hash
