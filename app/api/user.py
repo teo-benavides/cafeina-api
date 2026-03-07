@@ -31,6 +31,8 @@ def search_users_endpoint(
 @router.get("/by-username/{username}", response_model=UserResponse)
 def read_user_by_username(username: str, db: Session = Depends(get_db)):
     user = get_user_by_username(db, username)
+    print(username)
+    print(user)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user

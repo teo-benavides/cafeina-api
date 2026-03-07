@@ -4,7 +4,7 @@ from app.models.user import User
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
-    stmt = select(User).offset(skip).limit(limit).order_by(User.id)
+    stmt = select(User).offset(skip).limit(limit).order_by(User.created_at.desc())
     return list(db.scalars(stmt).all())
 
 
@@ -20,7 +20,7 @@ def search_users(db: Session, q: str, skip: int = 0, limit: int = 50):
         )
         .offset(skip)
         .limit(limit)
-        .order_by(User.id)
+        .order_by(User.created_at.desc())
     )
     return list(db.scalars(stmt).all())
 
