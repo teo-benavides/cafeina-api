@@ -59,7 +59,7 @@ def get_cafes(db: Session):
     ).all()
 
 
-def create_cafe(db: Session, cafe: CafeCreate):
+def create_cafe(db: Session, cafe: CafeCreate) -> Cafe:
     existing = get_cafe_by_maps_id(db, cafe.maps_id)
     if existing:
         raise HTTPException(status_code=400, detail="Cafe already exists!")

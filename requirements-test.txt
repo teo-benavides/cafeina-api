@@ -1,0 +1,3 @@
+# Test dependencies for cafeina-api
+pytest>=7.0.0
+httpx>=0.24.0

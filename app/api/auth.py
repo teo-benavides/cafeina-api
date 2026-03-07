@@ -81,7 +81,7 @@ def refresh(response: Response, request: Request, db: Session = Depends(get_db))
 
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
-        if payload.get("type") != "refresh":
+        if payload.get("token_type") != "refresh":
             raise HTTPException(status_code=401)
 
         user_id = int(payload["sub"])
