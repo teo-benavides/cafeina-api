@@ -71,6 +71,27 @@ jobs:
           run: |
             docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cafeina/api:latest
 
+        - name: Deploy migration job
+          run: |
+            gcloud run jobs deploy cafeina-migrate \
+              --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cafeina/api:latest \
+              --region ${{ secrets.GCP_REGION }} \
+              --command alembic \
+              --args upgrade,head \
+              --set-secrets DATABASE_URL=DATABASE_URL:latest \
+              --set-secrets SECRET_KEY=SECRET_KEY:latest \
+              --set-secrets ALGORITHM=ALGORITHM:latest \
+              --set-secrets ACCESS_TOKEN_EXPIRE_MINUTES=ACCESS_TOKEN_EXPIRE_MINUTES:latest \
+              --set-secrets REFRESH_TOKEN_EXPIRE_DAYS=REFRESH_TOKEN_EXPIRE_DAYS:latest \
+              --set-secrets CORS_ORIGINS=CORS_ORIGINS:latest \
+              --set-secrets GOOGLE_MAPS_API_KEY=GOOGLE_MAPS_API_KEY:latest
+
+        - name: Run migrations
+          run: |
+            gcloud run jobs execute cafeina-migrate \
+              --region ${{ secrets.GCP_REGION }} \
+              --wait
+
         - name: Deploy to Cloud Run
           run: |
             gcloud run deploy cafeina-api \
