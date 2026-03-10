@@ -78,6 +78,7 @@ jobs:
               --region ${{ secrets.GCP_REGION }} \
               --command alembic \
               --args upgrade,head \
+              --add-cloudsql-instances ${{ secrets.GCP_PROJECT_ID }}:${{ secrets.GCP_REGION }}:cafeina \
               --set-secrets DATABASE_URL=DATABASE_URL:latest \
               --set-secrets SECRET_KEY=SECRET_KEY:latest \
               --set-secrets ALGORITHM=ALGORITHM:latest \
@@ -97,6 +98,7 @@ jobs:
             gcloud run deploy cafeina-api \
             --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cafeina/api:latest \
             --region ${{ secrets.GCP_REGION }} \
+            --add-cloudsql-instances ${{ secrets.GCP_PROJECT_ID }}:${{ secrets.GCP_REGION }}:cafeina \
             --platform managed \
             --allow-unauthenticated \
             --set-secrets DATABASE_URL=DATABASE_URL:latest \
